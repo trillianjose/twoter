@@ -25,7 +25,7 @@
             <small><%= tweeet.user.username %></small><br/>
             <p><%= tweeet.tweeet %></p>
           </div>
-          <% if user_signed_in? %>
+          <% if current_user.id == tweeet.user.id  %>
             <nav class="level">
               <div class="level-left is mobile">
                 <%= link_to tweeet, class: "level-item" do %>
@@ -36,6 +36,19 @@
                 <% end %>
                 <%= link_to tweeet, method: :delete, data: {confirm: "Are you sure you want to delete this Tweeet?"}  do %>
                   <span class="icon"><i class="fa fa-trash-o" aria-hidden="true"></i></span>
+                <% end %>
+                <% else %>
+                  <% if current_user.id != tweeet.user.id %>
+                    <% if !current_user.following?(tweeet.user) %>
+                      <%= form_for current_user.active_relationships.build, url: following_user_path(current_user) do |f| %>
+                        <% link_to :followed_id, following_user_path(current_user) %>
+                        <span><%= f.submit "Follow", class: "btn btn-primary" %></span>
+                      <% end %>
+                    <% else %>
+                      <% form_for(current_user.active_relationships.find_by(followed_id: tweeet.user.id), method: :destroy) do |f| %>
+                        <%= f.submit "Unfollow", class: "btn" %>
+                      <% end %>
+                    <% end %>
                 <% end %>
               </div>
             </nav>

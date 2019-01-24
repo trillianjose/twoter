@@ -64,12 +64,11 @@ class TweeetsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
+
     def set_tweeet
       @tweeet = Tweeet.find(params[:id])
     end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
     def tweeet_params
       params.require(:tweeet).permit(:tweeet)
     end
